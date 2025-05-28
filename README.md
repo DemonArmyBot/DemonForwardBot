@@ -1,11 +1,11 @@
-# VJ Forward Bot
+# DemonArmyBots
 
 <b>Auto Restart All User Forwarding After Bot Restarted.</b>
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/DemonArmyBot/DemonForwardBot)
 
 
-![Typing SVG](https://readme-typing-svg.herokuapp.com/?lines=Welcome+To+VJ+Forward+Bot+!)
+![Typing SVG](https://readme-typing-svg.herokuapp.com/?lines=Welcome+To+Demon+Army+Bots+!)
 
 ## How To Deploy [Video Tutorial](https://youtu.be/A-iIh_5WAlk)
 
@@ -21,7 +21,7 @@
 - [x] Auto Restart Pending Task After Bot Restart 
 
 
-<b>To Know About All Features, Join My <a href='https://t.me/VJ_Botz'>Update Channel</a>.</b>
+<b>To Know About All Features, Join My <a href='https://t.me/DemonArmy'>Update Channel</a>.</b>
 
 ## Commands
 
