@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: DemonForwardBot
+    plan: free
+    env: docker
+    dockerfilePath: Dockerfile
+    repo: https://github.com/DemonArmyBot/DemonForwardBot
+    branch: main
+    autoDeploy: false
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: DATABASE_URI
+        sync: false
+      - key: BOT_OWNER
+        sync: false
+      #- key: WEBHOOK
+      # sync: false
+ 
