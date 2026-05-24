@@ -1,5 +1,3 @@
-
-
 import os
 import sys 
 import math
@@ -25,7 +23,13 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Script.TEXT
 
-
+PROGRESS = """{0}% Complete
+Fetched: {1}
+Forwarded: {2}
+Remaining: {3}
+Status: {4}
+ETA: {5}
+Uptime: {6}"""
 
 @Client.on_callback_query(filters.regex(r'^start_public'))
 async def pub_(bot, message):
@@ -155,7 +159,16 @@ async def pub_(bot, message):
                       MSG = []
                 else:
                    new_caption = custom_caption(message, caption)
-                   details = {"msg_id": message.id, "media": media(message), "caption": new_caption, 'button': button, "protect": protect}
+                   media_type = "video" if message.video else "document" if message.document else "photo" if message.photo else "audio" if message.audio else None
+                   details = {
+                       "msg_id": message.id, 
+                       "media": media(message), 
+                       "caption": new_caption, 
+                       'button': button, 
+                       "protect": protect,
+                       "media_type": media_type,
+                       "video": bool(message.video)
+                   }
                    await copy(user, client, details, m, sts)
                    sts.add('total_files')
                    await asyncio.sleep(sleep) 
@@ -178,14 +191,31 @@ async def pub_(bot, message):
 
 
 async def copy(user, bot, msg, m, sts):
-   try:                               
-     if msg.get("media") and msg.get("caption"):
-        await bot.send_cached_media(
-              chat_id=sts.get('TO'),
-              file_id=msg.get("media"),
-              caption=msg.get("caption"),
-              reply_markup=msg.get('button'),
-              protect_content=msg.get("protect"))
+   try:                             
+     if msg.get("media"):
+        try:
+            if msg.get("caption"):
+                await bot.send_cached_media(
+                    chat_id=sts.get('TO'),
+                    file_id=msg.get("media"),
+                    caption=msg.get("caption"),
+                    reply_markup=msg.get('button'),
+                    protect_content=msg.get("protect"))
+            else:
+                await bot.copy_message(
+                    chat_id=sts.get('TO'),
+                    from_chat_id=sts.get('FROM'),    
+                    message_id=msg.get("msg_id"),
+                    reply_markup=msg.get('button'),
+                    protect_content=msg.get("protect"))
+        except Exception as e:
+            err_str = str(e).upper() if str(e) else ""
+            if "CHAT_FORWARDS_RESTRICTED" in err_str or "FORWARDS_RESTRICTED" in err_str:
+                # Use advanced bypass
+                from .advanced_copy import advanced_copy
+                await advanced_copy(user, bot, msg, m, sts)
+            else:
+                raise e
      else:
         await bot.copy_message(
               chat_id=sts.get('TO'),
@@ -516,7 +546,6 @@ async def restart_pending_forwads(bot, user):
         start = None
     sts.add(time=True, start_time=start)
     sleep = 1 if _bot['is_bot'] else 10
-    #await msg_edit(m, "<code>processing...</code>") 
     temp.IS_FRWD_CHAT.append(i.TO)
     temp.lock[user] = locked = True
     dup_files = []
@@ -577,7 +606,16 @@ async def restart_pending_forwads(bot, user):
                       MSG = []
                 else:
                    new_caption = custom_caption(message, caption)
-                   details = {"msg_id": message.id, "media": media(message), "caption": new_caption, 'button': button, "protect": protect}
+                   media_type = "video" if message.video else "document" if message.document else "photo" if message.photo else "audio" if message.audio else None
+                   details = {
+                       "msg_id": message.id, 
+                       "media": media(message), 
+                       "caption": new_caption, 
+                       'button': button, 
+                       "protect": protect,
+                       "media_type": media_type,
+                       "video": bool(message.video)
+                   }
                    await copy(user, client, details, m, sts)
                    sts.add('total_files')
                    await asyncio.sleep(sleep) 
@@ -684,5 +722,3 @@ async def complete_time(total_files, files_per_minute=30):
     if seconds > 0:
         time_format += f"{int(seconds)}s"
     return time_format
-
-
