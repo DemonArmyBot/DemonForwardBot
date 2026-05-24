@@ -1,5 +1,3 @@
-
-
 import asyncio 
 from database import Db, db
 from script import Script
@@ -93,7 +91,7 @@ async def settings_query(bot, query):
         return await chat_ids.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
-     elif not chat_ids.forward_date:
+     elif not (chat_ids.forward_origin and chat_ids.forward_origin.date):
         return await chat_ids.reply("**This is not a forward message**")
      else:
         chat_id = chat_ids.forward_from_chat.id
@@ -689,6 +687,4 @@ async def next_filters_buttons(user_id):
        InlineKeyboardButton('End ⫸',
                     callback_data="settings#main")
        ]]
-  return InlineKeyboardMarkup(buttons) 
-
-
+  return InlineKeyboardMarkup(buttons)
