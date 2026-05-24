@@ -1,3 +1,5 @@
+
+
 import re
 import asyncio 
 from .utils import STS
@@ -44,7 +46,7 @@ async def run(bot, message):
     if fromid.text and fromid.text.startswith('/'):
         await message.reply(Script.CANCEL)
         return 
-    if fromid.text and not (fromid.forward_origin and fromid.forward_origin.date):
+    if fromid.text and not fromid.forward_date:
         regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
         match = regex.match(fromid.text.replace("?single", ""))
         if not match:
@@ -63,6 +65,8 @@ async def run(bot, message):
         return 
     try:
         title = (await bot.get_chat(chat_id)).title
+  #  except ChannelInvalid:
+        #return await fromid.reply("**Given source chat is copyrighted channel/group. you can't forward messages from there**")
     except (PrivateChat, ChannelPrivate, ChannelInvalid):
         title = "private" if fromid.text else fromid.forward_from_chat.title
     except (UsernameInvalid, UsernameNotModified):
@@ -85,3 +89,5 @@ async def run(bot, message):
         reply_markup=reply_markup
     )
     STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
+
+
